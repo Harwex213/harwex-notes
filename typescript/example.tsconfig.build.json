@@ -1,0 +1,7 @@
+{
+  // Этот файл нужен для удобства, так как позволяет избежать траблов с IDE
+  // https://stackoverflow.com/questions/76048284/difference-between-tsconfig-json-and-tsconfig-build-json#:~:text=Usually%2C%20tsconfig.,date%20files%20to%20save%20time.
+  // https://github.com/kulshekhar/ts-jest/issues/797
+  "extends": "./example.tsconfig.json",
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}

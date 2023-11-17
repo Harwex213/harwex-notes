@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    // Оффициальная reference дока TS Config, чекай - https://www.typescriptlang.org/tsconfig
+    // Примеры TS Config'ов на (почти) все случаи жизни - https://github.com/tsconfig/bases/
+    // NestJS Starter Project. TS Config - https://github.com/nestjs/typescript-starter/blob/master/tsconfig.json
+
+    /*  Type Checking
+        группа параметров, задающих поведение проверок комплиятора. Например на отлавливание unreachable кода или
+        неиспользованных локальных переменных
+     */
+    "strict": true,
+    "noUncheckedIndexedAccess": true, // при использовании index signature (env[UNDEFINED_KEY]) тип будет также undefined, что потребует проверки в рантайме
+
+    /*  Modules
+     */
+    "module": "node16", // говорим TS компилятору какую систему модулей генерить (CJS, AMD, ESM, ...)
+    "moduleResolution": "node16", // говорим TS компилятору как модули будут резолвиться хостом (тот, кто будет хомячить скомпилированный код)
+    "resolveJsonModule": true, // можем подключать json
+    // "baseUrl": "./", // с какой директории будут резолвятся модули. По идеи, если юзаем node16, то можно не использовать
+
+    /*  Emit
+     */
+    "declaration": true, // помимо .js файлов ещё генерим и .d.ts
+    "outDir": "./dist", // куда плюём скомпилированный js
+    "removeComments": true, // убираем комменьты?
+    "sourceMap": true, // помимо .js файлов ещё генерим и .js.map, что позволяет при дебаггинге бегать по .ts файлам
+
+    /*  Interop Constraints
+     */
+    "esModuleInterop": true, // фиксит взаимодействие между ESM и CJS модулями
+    "allowSyntheticDefaultImports": true, // убирает ошибки при импорте из модулей, где нет явного default экспорта. Включается по умолчанию, если включено esModuleInterop
+    "isolatedModules": true, // позволяет избежать ошибок в случаях, когда происходит обработка TS файлов поштучно ежемоментно (1 файл прямо сейчас)
+
+    /*  Language and Environment
+     */
+    "emitDecoratorMetadata": true, // добавляет ещё третий параметр, передающий метаданные о сущности, к которой использовался декоратор (юзает либу reflect-metadata) 
+    "experimentalDecorators": true, // включает возможным использованием декораторов (их имплементация может отличаться от поведения EcmaScript)
+    "target": "es2022", // указывает на каком JS мы в итоге пишем
+    "lib": ["es2023"], // указывает какие библиотеки будут использоваться; например, для браузера могут также подойти ["es2022", "dom", "dom.iterable"]
+    // смотри также список текущих возможных значений: https://github.com/microsoft/TypeScript/tree/main/src/lib
+    "moduleDetection": "force", // 
+
+    /*  Completeness
+     */
+    "skipLibCheck": true, // не чекает все типы в .d.ts (приведенные в node_modules), а только используемые в коде
+
+
+    /*  Completeness
+     */
+    "incremental": true // сохраняет последний граф билда (по идеи, ускоряет таким образом последующие билды?)
+  }
+}
