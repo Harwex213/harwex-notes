@@ -1,0 +1,9 @@
+{
+  "name": "typescript",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
