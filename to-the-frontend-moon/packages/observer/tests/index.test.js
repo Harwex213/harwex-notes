@@ -1,0 +1,26 @@
+import test from "node:test";
+import assert from "node:assert";
+import { Observable } from "../src/index.js";
+
+test("should can subscribe to interval observable and unsubscribe after 10 value", (_, done) => {
+    let lastValue = 0;
+
+    const observable = new Observable((observer) => {
+        let i = 0;
+        const intervalId = setInterval(() => observer.next(i++), 0);
+        return () => {
+            clearInterval(intervalId);
+            assert.strictEqual(lastValue, 10);
+            done();
+        }
+    });
+
+    const subscription = observable.subscribe({
+        next: (value) => {
+            lastValue = value;
+            if (value === 10) {
+                subscription.unsubscribe();
+            }
+        },
+    });
+})
