@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert";
-import { Observable } from "../src/index.js";
+import { Observable, of, map } from "../src/index.js";
 
 test("should can subscribe to interval observable and unsubscribe after 10 value", (_, done) => {
     let lastValue = 0;
@@ -22,5 +22,19 @@ test("should can subscribe to interval observable and unsubscribe after 10 value
                 subscription.unsubscribe();
             }
         },
+    });
+})
+
+test("should can pipe with two maps", (_, done) => {
+    const observable = of(10).pipe(
+        map((value) => value * 2),
+        map((value) => value * 2),
+    );
+
+    observable.subscribe({
+        next: (value) => {
+            assert.strictEqual(value, 40);
+        },
+        complete: done
     });
 })
