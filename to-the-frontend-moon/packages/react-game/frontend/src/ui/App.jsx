@@ -1,5 +1,7 @@
+import {EfficientContext} from "./EfficientContext.jsx";
+
 const App = () => {
-    return <div>conichiva</div>
+    return <EfficientContext />;
 }
 
 export { App }
