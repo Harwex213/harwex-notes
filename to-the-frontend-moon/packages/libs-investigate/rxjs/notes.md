@@ -8,7 +8,7 @@
 **mergeMap**
 
 Оператор, который плодит много подписок при получении value от исходного observable.
-![img.png](../../../../imgs/rxjs-1.png)
+![img.png](../../../imgs/rxjs-1.png)
 
 **switchMap**
 
