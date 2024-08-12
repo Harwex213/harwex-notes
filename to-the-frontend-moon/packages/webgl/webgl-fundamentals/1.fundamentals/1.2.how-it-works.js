@@ -1,4 +1,4 @@
-import { createGlContext, createProgram, createShader } from "./lib.js";
+import { createGlContext, createProgram, createShader } from "../lib/utils.js";
 
 const vertexShaderSource = `
     attribute vec2 a_position;
