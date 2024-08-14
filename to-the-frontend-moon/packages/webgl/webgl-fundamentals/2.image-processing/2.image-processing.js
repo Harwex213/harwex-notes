@@ -1,18 +1,38 @@
 import { createGlContext, createProgram, createShader, updateViewportFactory } from "../lib/utils.js";
 
 const vertexShaderSource = `
-    attribute vec2 a_position;
-    attribute vec2 a_texCoord;
     uniform vec2 u_resolution;
+    uniform vec2 u_movement;
+    uniform float u_zoom;
+    attribute vec2 a_rect;
+    attribute vec2 a_texture;
     varying vec2 v_texCoord;
     
-    void main() {
-        vec2 zeroToOne = a_position / u_resolution;
+    vec2 toClipSpace(vec2 source) {
+        vec2 zeroToOne = source / u_resolution;
         vec2 zeroToTwo = zeroToOne * 2.0;
         vec2 clipSpace = zeroToTwo - 1.0;
+        return clipSpace * vec2(1, -1);
+    }
+    
+    void main() {
+        vec4 initialPos = vec4(a_rect, 0, 1);
+        mat4 movement = mat4 (
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            u_movement.x / u_zoom, u_movement.y / u_zoom, 0, 1
+        );
+        mat4 zoom = mat4 (
+            u_zoom, 0, 0, 0,
+            0, u_zoom, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 1
+        );
+        vec4 final_pos = (zoom * movement) * initialPos;
         
-        gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
-        v_texCoord = a_texCoord;
+        gl_Position = vec4(toClipSpace(vec2(final_pos.x, final_pos.y)), 0, 1);
+        v_texCoord = a_texture;
     }
 `;
 
@@ -49,8 +69,7 @@ function setRectangle(gl, x, y, width, height) {
 const context = {
     offsetX: 0,
     offsetY: 0,
-    lastOffsetX: 0,
-    lastOffsetY: 0,
+    zoom: 1,
 };
 
 const imageProcessing = async () => {
@@ -59,75 +78,86 @@ const imageProcessing = async () => {
     const { gl, canvasSizes, canvas } = createGlContext();
 
     const updateOffset = (e) => {
-        context.offsetX = e.offsetX;
-        context.offsetY = e.offsetY;
+        context.offsetX += e.movementX;
+        context.offsetY += e.movementY;
+        console.log(e.movementX, e.movementY);
     };
-    canvas.addEventListener("mousedown", () => {
-        canvas.addEventListener("mousemove", updateOffset);
+    document.addEventListener("mousedown", () => {
+        document.addEventListener("pointermove", updateOffset);
     });
-    canvas.addEventListener("mouseup", () => {
-        canvas.removeEventListener("mousemove", updateOffset);
+    document.addEventListener("mouseup", () => {
+        document.removeEventListener("pointermove", updateOffset);
     });
+    document.addEventListener("wheel", (e) => {
+        context.zoom += e.deltaY > 0 ? -0.05 : 0.05;
+        const projectionX = e.clientX / canvasSizes.width;
+        const projectionY = e.clientY / canvasSizes.height;
+        const newWidth = canvasSizes.width * context.zoom;
+        const newHeight = canvasSizes.height * context.zoom;
+        context.offsetX *= projectionX;
+        context.offsetY *= projectionY;
+        console.log(projectionX, projectionY, canvasSizes.width, canvasSizes.height, newWidth, newHeight)
+    })
 
     const updateViewport = updateViewportFactory(canvasSizes);
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
     const program = createProgram(gl, vertexShader, fragmentShader);
 
-    const position = gl.getAttribLocation(program, "a_position");
-    const texCoord = gl.getAttribLocation(program, "a_texCoord");
+    const rectCoordinate = gl.getAttribLocation(program, "a_rect");
+    const textureCoordinate = gl.getAttribLocation(program, "a_texture");
+    const movement = gl.getUniformLocation(program, "u_movement");
+    const zoom = gl.getUniformLocation(program, "u_zoom");
     const resolution = gl.getUniformLocation(program, "u_resolution");
 
-    const positionBuffer = gl.createBuffer();
-    const texCoordBuffer = gl.createBuffer();
+    const rectCoordinateBuffer = gl.createBuffer();
+    const textureCoordinateBuffer = gl.createBuffer();
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    setRectangle(gl, 0, 0, 0, 0);
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+    const image = await waitImage;
+    context.imageWidth = image.width;
+    context.imageHeight = image.height;
+    gl.bindBuffer(gl.ARRAY_BUFFER, rectCoordinateBuffer);
+    setRectangle(gl, 0, 0, image.width, image.height);
+    gl.enableVertexAttribArray(rectCoordinate);
+    gl.vertexAttribPointer(rectCoordinate, 2, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordinateBuffer);
     gl.bufferData(
         gl.ARRAY_BUFFER,
         new Float32Array([0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0]),
         gl.STATIC_DRAW,
     );
-    gl.enableVertexAttribArray(texCoord);
-    gl.vertexAttribPointer(texCoord, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(textureCoordinate);
+    gl.vertexAttribPointer(textureCoordinate, 2, gl.FLOAT, false, 0, 0);
 
     const texture = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    const image = await waitImage;
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+    gl.useProgram(program);
 
     const drawScene = () => {
         updateViewport(gl);
 
-        gl.useProgram(program);
-
-        gl.clearColor(0, 0, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        const { lastOffsetX, lastOffsetY, offsetX, offsetY } = context;
-        if (lastOffsetX !== offsetX || lastOffsetY !== offsetY) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            setRectangle(gl, 0 - offsetX, 0 - offsetY, image.width * 2 - offsetX, image.height * 2 - offsetY);
-        }
-        context.lastOffsetX = offsetX;
-        context.lastOffsetY = offsetY;
-
         gl.uniform2f(resolution, gl.canvas.width, gl.canvas.height);
+        gl.uniform2f(movement, context.offsetX, context.offsetY);
+        gl.uniform1f(zoom, context.zoom);
 
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+
         requestAnimationFrame(drawScene);
     };
 
     drawScene();
 };
+
+/* TODO
+ *  1) Zoom происходит не туда, куда указываю мышью
+ */
 
 imageProcessing();

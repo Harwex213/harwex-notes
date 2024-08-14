@@ -63,12 +63,13 @@ export const createProgram = (gl, vertexShader, fragmentShader) => {
 };
 
 export const createGlContext = () => {
-    const canvas = document.querySelector("#canvas");
+    const container = document.querySelector("#container");
+    const canvas = document.createElement("canvas");
     const canvasSizes = {
         width: 0,
         height: 0,
     };
-    observeResize(canvas, (width, height) => {
+    observeResize(container, (width, height) => {
         canvasSizes.width = width;
         canvasSizes.height = height;
     });
@@ -76,6 +77,7 @@ export const createGlContext = () => {
     if (!gl) {
         throw new Error("We don't have webgl Context!");
     }
+    container.append(canvas);
     return { gl, canvas, canvasSizes };
 };
 
