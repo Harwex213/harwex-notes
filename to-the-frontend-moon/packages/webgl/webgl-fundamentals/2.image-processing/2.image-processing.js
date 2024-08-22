@@ -164,19 +164,12 @@ const imageProcessing = async () => {
             scale.isDirty = false;
 
             transformMatrix.applyInverse(scale.center, localPointBeforeScale);
-
             transformMatrix.setScale(scale.value.x, scale.value.y);
-
             transformMatrix.apply(localPointBeforeScale, globalPointAfterScale);
             transformMatrix.translate(
                 scale.center.x - globalPointAfterScale.x,
                 scale.center.y - globalPointAfterScale.y,
             );
-
-            console.log(transformMatrix.scaleX);
-            console.log(scale.center);
-            console.log(localPointBeforeScale);
-            console.log(globalPointAfterScale);
         }
 
         gl.uniform2f(resolution, gl.canvas.width, gl.canvas.height);
