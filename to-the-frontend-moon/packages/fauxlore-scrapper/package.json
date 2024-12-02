@@ -1,0 +1,11 @@
+{
+  "name": "@hw/fauxlore-scrapper",
+  "description": "Web-scrapper for Fauxlore group in Vk",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "jsdom": "25.0.1",
+    "puppeteer": "23.4.0"
+  }
+}
