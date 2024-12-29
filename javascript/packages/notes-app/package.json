@@ -1,0 +1,21 @@
+{
+  "name": "@hw/notes-app",
+  "description": "App to management flow of information",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "scripts": {
+    "start": "npx parcel public/index.html"
+  },
+  "dependencies": {
+    "@hw/utils": "1.0.0"
+  },
+  "devDependencies": {
+    "parcel": "2.12.0"
+  }
+}

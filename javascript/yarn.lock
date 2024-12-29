@@ -44,38 +44,55 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hw/observer@workspace:packages/observer":
+"@hw/html-lib@workspace:packages/infrastructure/html-lib":
   version: 0.0.0-use.local
-  resolution: "@hw/observer@workspace:packages/observer"
+  resolution: "@hw/html-lib@workspace:packages/infrastructure/html-lib"
+  dependencies:
+    mobx: "npm:6.13.5"
   languageName: unknown
   linkType: soft
 
-"@hw/react-game-backend@workspace:packages/react-game/backend":
+"@hw/notes-app@workspace:packages/notes-app":
   version: 0.0.0-use.local
-  resolution: "@hw/react-game-backend@workspace:packages/react-game/backend"
+  resolution: "@hw/notes-app@workspace:packages/notes-app"
+  dependencies:
+    "@hw/utils": "npm:1.0.0"
+    parcel: "npm:2.12.0"
+  languageName: unknown
+  linkType: soft
+
+"@hw/observer@workspace:packages/frontend-practice/observer":
+  version: 0.0.0-use.local
+  resolution: "@hw/observer@workspace:packages/frontend-practice/observer"
+  languageName: unknown
+  linkType: soft
+
+"@hw/react-game-backend@workspace:packages/work/react-game/backend":
+  version: 0.0.0-use.local
+  resolution: "@hw/react-game-backend@workspace:packages/work/react-game/backend"
   dependencies:
     ws: "npm:8.17.1"
   languageName: unknown
   linkType: soft
 
-"@hw/react-game-diff-protocol@workspace:packages/react-game/diff-protocol":
+"@hw/react-game-diff-protocol@workspace:packages/work/react-game/diff-protocol":
   version: 0.0.0-use.local
-  resolution: "@hw/react-game-diff-protocol@workspace:packages/react-game/diff-protocol"
+  resolution: "@hw/react-game-diff-protocol@workspace:packages/work/react-game/diff-protocol"
   languageName: unknown
   linkType: soft
 
-"@hw/react-game-frontend@workspace:packages/react-game/frontend":
+"@hw/react-game-frontend@workspace:packages/work/react-game/frontend":
   version: 0.0.0-use.local
-  resolution: "@hw/react-game-frontend@workspace:packages/react-game/frontend"
+  resolution: "@hw/react-game-frontend@workspace:packages/work/react-game/frontend"
   dependencies:
     react: "npm:18.3.1"
     react-dom: "npm:18.3.1"
   languageName: unknown
   linkType: soft
 
-"@hw/react@workspace:packages/libs-investigate/react":
+"@hw/react@workspace:packages/frontend-practice/libs-investigate/react":
   version: 0.0.0-use.local
-  resolution: "@hw/react@workspace:packages/libs-investigate/react"
+  resolution: "@hw/react@workspace:packages/frontend-practice/libs-investigate/react"
   dependencies:
     "@types/react": "npm:18.3.3"
     "@types/react-dom": "npm:18.3.0"
@@ -85,25 +102,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@hw/redux@workspace:packages/libs-investigate/redux":
+"@hw/redux@workspace:packages/frontend-practice/libs-investigate/redux":
   version: 0.0.0-use.local
-  resolution: "@hw/redux@workspace:packages/libs-investigate/redux"
+  resolution: "@hw/redux@workspace:packages/frontend-practice/libs-investigate/redux"
   dependencies:
     redux: "npm:5.0.1"
   languageName: unknown
   linkType: soft
 
-"@hw/rxjs@workspace:packages/libs-investigate/rxjs":
+"@hw/rxjs@workspace:packages/frontend-practice/libs-investigate/rxjs":
   version: 0.0.0-use.local
-  resolution: "@hw/rxjs@workspace:packages/libs-investigate/rxjs"
+  resolution: "@hw/rxjs@workspace:packages/frontend-practice/libs-investigate/rxjs"
   dependencies:
     rxjs: "npm:7.8.1"
   languageName: unknown
   linkType: soft
 
-"@hw/web-worker@workspace:packages/web-worker":
+"@hw/utils@npm:1.0.0, @hw/utils@workspace:packages/infrastructure/utils":
   version: 0.0.0-use.local
-  resolution: "@hw/web-worker@workspace:packages/web-worker"
+  resolution: "@hw/utils@workspace:packages/infrastructure/utils"
+  languageName: unknown
+  linkType: soft
+
+"@hw/web-worker@workspace:packages/frontend-practice/web-worker":
+  version: 0.0.0-use.local
+  resolution: "@hw/web-worker@workspace:packages/frontend-practice/web-worker"
   dependencies:
     parcel: "npm:2.12.0"
   languageName: unknown
@@ -2463,6 +2486,13 @@ __metadata:
   bin:
     mkdirp: bin/cmd.js
   checksum: 10/d71b8dcd4b5af2fe13ecf3bd24070263489404fe216488c5ba7e38ece1f54daf219e72a833a3a2dc404331e870e9f44963a33399589490956bff003a3404d3b2
+  languageName: node
+  linkType: hard
+
+"mobx@npm:6.13.5":
+  version: 6.13.5
+  resolution: "mobx@npm:6.13.5"
+  checksum: 10/1b0842ae4f3d7319a532ee5fcb29d4ccde714248af9111e7c375bed4adbe49c4535c6383fd14933c4e7ec022c0b730deb55e32344dcfad025c711435b3e21c42
   languageName: node
   linkType: hard
 
