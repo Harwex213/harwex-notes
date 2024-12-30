@@ -17,10 +17,16 @@ const elementFabric =
         new UiElement(document.createElement(tagName), props);
 
 const div = elementFabric("div");
+const p = elementFabric("p");
+const h1 = elementFabric("h1");
+const h2 = elementFabric("h2");
+const h3 = elementFabric("h3");
+const h4 = elementFabric("h4");
+const h5 = elementFabric("h5");
+const h6 = elementFabric("h6");
+const canvas = elementFabric("canvas");
 const a = elementFabric("a");
 const link = (props = {}) => a({ ...props, onClick: handleAnchorClickFabric(props.onClick) });
-const p = elementFabric("p");
-const canvas = elementFabric("canvas");
 
 class Switcher {
     #routes = new WeakMap();
@@ -34,12 +40,12 @@ class Switcher {
         this.#uiElementContainer = uiElement;
     }
 
-    match(route, component) {
-        this.#routes.set(route, component);
+    match(route, handle) {
+        this.#routes.set(route, handle);
         return this;
     }
 
-    default(path) {
+    defaultPath(path) {
         this.#defaultPath = path;
         return this;
     }
@@ -48,9 +54,10 @@ class Switcher {
         const finalize = autorun(() => {
             const currentPath = router.currentPath;
 
-            for (const [route, component] of this.#routes.entries()) {
-                if (!!route.matchRoute(currentPath)) {
-                    this.#uiElementContainer.child(component());
+            for (const [route, handle] of this.#routes.entries()) {
+                const match = route.matchRoute(currentPath);
+                if (!!match) {
+                    this.#uiElementContainer.child(handle(match.params));
                     break;
                 }
             }
@@ -69,4 +76,4 @@ class Switcher {
 
 const switcher = toFunctionCreator(Switcher);
 
-export { div, a, link, p, canvas, switcher };
+export { div, h1, h2, h3, h4, h5, h6, a, link, p, canvas, switcher };
